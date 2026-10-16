@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBLIC DOOM P(●) — Interactive Low-Poly PS1 World // Jax · Topeng · Ayesha · Athena</title>
+  <link rel="stylesheet" href="./src/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- 3D WebGL2 PS1 + Bayer Dither Canvas -->
+  <canvas id="stage-canvas"></canvas>
+  <div class="crt-frame-overlay"></div>
+
+  <!-- 3D-to-2D Projected Interactive Character & Prop Pins -->
+  <div id="pins-layer"></div>
+
+  <!-- ======================================================================
+       PS1 BOOT SPLASH OVERLAY
+       ====================================================================== -->
+  <div id="boot-screen" class="boot-screen">
+    <div class="boot-card">
+      <div class="boot-diamond">SONY-ERA 32-BIT // BAYER 4×4 DITHER ENGINE</div>
+      <div class="boot-title">PUBLIC DOOM</div>
+      <div class="boot-sub">P(●) OFFICIAL YOUTUBE CHANNEL // INTERACTIVE 3D WORLD &amp; SUPPLY</div>
+      <p style="font-size:11px;line-height:1.5;color:#b8c0d8;margin-bottom:16px;">
+        Explore the low-poly PS1 worlds where <strong>JAX</strong>, <strong>TOPENG</strong>, <strong>AYESHA</strong>, and <strong>ATHENA</strong> live and record:
+        their <em>Broadcast Studio</em>, after-hours <em>Playground</em>, <em>Homer's 24H Diner</em>, and the sunlit <em>Voxel Grass Field</em>.
+      </p>
+      <div class="boot-cast-strip">
+        <div class="boot-cast-cell" style="border-top:2px solid #ff3b30">
+          <strong>JAX</strong>
+          <span>MAIN HOST</span>
+        </div>
+        <div class="boot-cast-cell" style="border-top:2px solid #ff7eb6">
+          <strong>TOPENG</strong>
+          <span>RESEARCH LABS</span>
+        </div>
+        <div class="boot-cast-cell" style="border-top:2px solid #9b6bff">
+          <strong>AYESHA</strong>
+          <span>CREATIVE DIR</span>
+        </div>
+        <div class="boot-cast-cell" style="border-top:2px solid #ffd43b">
+          <strong>ATHENA</strong>
+          <span>SYNTH &amp; LORE</span>
+        </div>
+      </div>
+      <button id="boot-start-btn" class="boot-start-btn">▶ BOOT SYSTEM &amp; PLAY SOUNDTRACK [ENTER 3D WORLD]</button>
+      <button id="boot-skip-btn" class="mini-action-btn" style="width:100%;padding:6px;">ENTER SILENTLY (MUTE BOOT CHIME)</button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       TOP HUD: BRAND, 4-CHARACTER SELECTOR, MERCH STORE & SHADER LAB
+       ====================================================================== -->
+  <header class="hud-top">
+    <div class="brand-box">
+      <div class="brand-emblem">P(<span class="red-dot"></span>)</div>
+      <div class="brand-meta">
+        <div class="ch-title">PUBLIC DOOM</div>
+        <div class="ch-sub">YOUTUBE CHANNEL // 4-WORLD ATLAS</div>
+      </div>
+    </div>
+
+    <!-- Quick Focus Bar for the 4 Characters -->
+    <div class="cast-quick-bar">
+      <span class="cast-bar-label">CAST //</span>
+      <button class="cast-pill" data-char-btn="JAX" style="--c-col:#ff3b30">
+        <span class="c-dot"></span>01 JAX
+      </button>
+      <button class="cast-pill" data-char-btn="TOPENG" style="--c-col:#ff7eb6">
+        <span class="c-dot"></span>02 TOPENG
+      </button>
+      <button class="cast-pill" data-char-btn="AYESHA" style="--c-col:#9b6bff">
+        <span class="c-dot"></span>03 AYESHA
+      </button>
+      <button class="cast-pill" data-char-btn="ATHENA" style="--c-col:#ffd43b">
+        <span class="c-dot"></span>04 ATHENA
+      </button>
+    </div>
+
+    <div class="hud-actions">
+      <button id="open-episode-btn" class="hud-btn">▶ WATCH EPISODE</button>
+      <button id="toggle-fx-btn" class="hud-btn">⚙ PS1 / DITHER FX</button>
+      <button id="reset-cam-btn" class="hud-btn">⌖ RESET CAM</button>
+      <button id="open-merch-btn" class="hud-btn merch-cta">
+        ★ MERCH STORE <span id="cart-count-badge" class="badge-pill">1</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       LEFT HUD: ACTIVE WORLD CARD, CAMERA PRESETS & SOUNDTRACK DECK
+       ====================================================================== -->
+  <aside class="hud-left">
+    <div class="world-card">
+      <div id="hud-world-index" class="world-idx">SECTOR // 01</div>
+      <h1 id="hud-world-title" class="world-title">PUBLIC DOOM STUDIO</h1>
+      <div id="hud-world-sub" class="world-sub">HQ // BROADCAST &amp; EDITING BUNKER</div>
+      <p id="hud-world-desc" class="world-desc">
+        Where Jax, Topeng, Ayesha, and Athena write, shoot, and edit Public Doom episodes.
+      </p>
+      <div id="world-views-bar" class="world-views-bar"></div>
+    </div>
+
+    <!-- Soundtrack Player using Music from DEATH_OF_INTERESTING_THINGS_1080p60.mp4 -->
+    <div class="audio-deck">
+      <div class="deck-top">
+        <span class="deck-label">OST // DEATH OF INTERESTING THINGS</span>
+        <div class="eq-bars">
+          <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+          <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+        </div>
+      </div>
+      <div id="bgm-track-title" class="deck-track">01 · STUDIO LOFI (CH.LOFI)</div>
+      <div class="deck-controls">
+        <button id="bgm-play-btn" class="deck-btn">▶ PLAY</button>
+        <button id="bgm-next-btn" class="deck-btn">⏭ NEXT TRACK</button>
+        <button id="bgm-mute-btn" class="deck-btn">MUTE: OFF</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================================================================
+       RIGHT HUD: CHARACTER DOSSIER & LIVE 3D RIG INSPECTOR
+       ====================================================================== -->
+  <aside id="char-panel" class="char-panel hidden">
+    <div class="panel-head">
+      <div>
+        <div id="char-panel-tag" class="char-tag">MAIN CHARACTER // P(●) 01</div>
+        <div id="char-panel-name" class="char-name">JAX</div>
+        <div id="char-panel-role" class="char-role">HOST // WRITER</div>
+      </div>
+      <button id="char-close-btn" class="icon-close" title="Close">✕</button>
+    </div>
+
+    <div class="char-quote-box">
+      <div id="char-panel-quote" class="char-quote-text">
+        "Did interesting things actually die in 2026, or did we just optimize all the friction out of living?"
+      </div>
+      <button id="char-quote-btn" class="mini-action-btn">💬 SPEAK NEXT LINE</button>
+    </div>
+
+    <p id="char-panel-bio" class="char-bio"></p>
+
+    <div id="char-stats-grid" class="char-stats-grid"></div>
+
+    <div class="inspector-section">
+      <div class="sec-label"><span>ACTIVE OUTFIT</span><span>3D MESH SWAP</span></div>
+      <div class="outfit-bar">
+        <span id="char-outfit-label" class="outfit-name">HOMER'S CREW UNIFORM</span>
+        <button id="char-outfit-btn" class="mini-action-btn">↻ SWAP OUTFIT</button>
+      </div>
+    </div>
+
+    <div class="inspector-section">
+      <div class="sec-label"><span>POSE RIG</span><span>SPRING HAIR + JOINTS</span></div>
+      <div class="chip-row">
+        <button class="chip-btn active" data-pose-btn="stand">STAND</button>
+        <button class="chip-btn" data-pose-btn="wave">WAVE</button>
+        <button class="chip-btn" data-pose-btn="explain">EXPLAIN</button>
+        <button class="chip-btn" data-pose-btn="cross">CROSS</button>
+        <button class="chip-btn" data-pose-btn="hip">HIP</button>
+        <button class="chip-btn" data-pose-btn="cheer">CHEER</button>
+        <button class="chip-btn" data-pose-btn="point">POINT</button>
+        <button class="chip-btn" data-pose-btn="shrug">SHRUG</button>
+      </div>
+    </div>
+
+    <div class="inspector-section">
+      <div class="sec-label"><span>PIXEL FACE EXPRESSION</span><span>128×128 CANVAS</span></div>
+      <div class="chip-row">
+        <button class="chip-btn active" data-expr-btn="neutral">NEUTRAL</button>
+        <button class="chip-btn" data-expr-btn="happy">HAPPY</button>
+        <button class="chip-btn" data-expr-btn="smug">SMUG</button>
+        <button class="chip-btn" data-expr-btn="shock">SHOCK</button>
+        <button class="chip-btn" data-expr-btn="sad">SAD</button>
+        <button class="chip-btn" data-expr-btn="angry">ANGRY</button>
+        <button class="chip-btn" data-expr-btn="talk">TALK</button>
+      </div>
+    </div>
+
+    <button id="char-merch-btn" class="full-cta-btn">★ SHOP THIS CHARACTER'S MERCH</button>
+  </aside>
+
+  <!-- ======================================================================
+       PS1 / BAYER DITHER / CRT SHADER LAB DRAWER
+       ====================================================================== -->
+  <aside id="fx-drawer" class="fx-drawer hidden">
+    <div class="panel-head">
+      <div>
+        <div class="char-tag">WEBGL2 POST-PROCESS</div>
+        <strong style="font-size:14px;">PS1 &amp; BAYER DITHER LAB</strong>
+      </div>
+      <button class="icon-close" onclick="document.getElementById('fx-drawer').classList.add('hidden')">✕</button>
+    </div>
+
+    <div class="fx-row">
+      <label>PS1 RESOLUTION / VERTEX SNAP (uSnap)</label>
+      <div class="chip-row">
+        <button class="chip-btn" data-ps1-scale="0">1X HD</button>
+        <button class="chip-btn active" data-ps1-scale="2">2X PS1</button>
+        <button class="chip-btn" data-ps1-scale="3">3X RETRO</button>
+        <button class="chip-btn" data-ps1-scale="5">5X CRUNCH</button>
+      </div>
+    </div>
+
+    <div class="fx-row">
+      <label>BAYER 4×4 ORDERED DITHERING (uDither)</label>
+      <input id="fx-dither-range" type="range" min="0" max="1" step="0.05" value="0.7" />
+    </div>
+
+    <div class="fx-row">
+      <label>CRT SCANLINES (uScan)</label>
+      <input id="fx-scan-range" type="range" min="0" max="0.6" step="0.02" value="0.15" />
+    </div>
+
+    <div class="fx-row">
+      <label>TRINITRON BARREL CURVATURE (uBarrel)</label>
+      <input id="fx-barrel-range" type="range" min="0" max="0.25" step="0.01" value="0.05" />
+    </div>
+
+    <div class="fx-row" style="display:flex;flex-direction:column;gap:5px;">
+      <button id="fx-toon-btn" class="chip-btn" style="padding:6px;">HALFTONE TOON: OFF</button>
+      <button id="fx-dz-btn" class="chip-btn" style="padding:6px;">4-COLOR DITHER: OFF</button>
+      <button id="fx-pal-btn" class="chip-btn" style="padding:6px;">PALETTE: DOOM ICE</button>
+    </div>
+  </aside>
+
+  <!-- ======================================================================
+       HOTSPOT INSPECTION TOAST
+       ====================================================================== -->
+  <div id="hotspot-toast" class="hotspot-toast hidden">
+    <div class="toast-top">
+      <strong id="toast-title">ARTIFACT INSPECTOR</strong>
+      <button id="toast-close-btn" class="icon-close">✕</button>
+    </div>
+    <p id="toast-desc"></p>
+  </div>
+
+  <!-- ======================================================================
+       BOTTOM HUD: 4 WORLDS + ATLAS MAP SPATIAL NAVIGATION DOCK
+       ====================================================================== -->
+  <footer class="hud-bottom">
+    <div class="hint-pill">DRAG TO ORBIT · SCROLL TO ZOOM · CLICK PINS OR CAST</div>
+
+    <nav class="world-dock" aria-label="Worlds Navigation">
+      <button id="prev-world-btn" class="nav-arrow" title="Previous World">◀</button>
+      <button class="world-tab active" data-world-btn="studio">
+        <span class="wt-num">WORLD 01 // HQ</span>
+        <span class="wt-name">THE STUDIO</span>
+      </button>
+      <button class="world-tab" data-world-btn="playground">
+        <span class="wt-num">WORLD 02 // PARK</span>
+        <span class="wt-name">PLAYGROUND</span>
+      </button>
+      <button class="world-tab" data-world-btn="diner">
+        <span class="wt-num">WORLD 03 // FAV SPOT</span>
+        <span class="wt-name">HOMER'S DINER</span>
+      </button>
+      <button class="world-tab" data-world-btn="meadow">
+        <span class="wt-num">WORLD 04 // OUTDOORS</span>
+        <span class="wt-name">GRASS FIELD</span>
+      </button>
+      <button class="world-tab" data-world-btn="island">
+        <span class="wt-num">WORLD 00 // HUB</span>
+        <span class="wt-name">3D ATLAS MAP</span>
+      </button>
+      <button id="next-world-btn" class="nav-arrow" title="Next World">▶</button>
+    </nav>
+
+    <div class="hint-pill">KEYS: [1–4] WORLDS · [0] MAP · [M] MERCH</div>
+  </footer>
+
+  <!-- ======================================================================
+       PUBLIC DOOM MERCHANDISE STORE MODAL
+       ====================================================================== -->
+  <div id="merch-modal" class="modal-backdrop hidden">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <div class="modal-sub">PUBLIC DOOM SUPPLY CO. × HOMER'S 24H DINER</div>
+          <h2>OFFICIAL CHANNEL MERCHANDISE ARCHIVE</h2>
+        </div>
+        <button id="close-merch-btn" class="hud-btn">✕ RETURN TO 3D WORLD</button>
+      </div>
+
+      <div class="merch-toolbar">
+        <div class="filter-group">
+          <button class="chip-btn active" data-merch-filter="ALL">ALL ARTIFACTS (8)</button>
+          <button class="chip-btn" data-merch-filter="APPAREL">APPAREL</button>
+          <button class="chip-btn" data-merch-filter="ACCESSORIES">ACCESSORIES</button>
+          <button class="chip-btn" data-merch-filter="COLLECTIBLES">COLLECTIBLES</button>
+          <button class="chip-btn" data-merch-filter="JAX">JAX GEAR</button>
+          <button class="chip-btn" data-merch-filter="TOPENG">TOPENG GEAR</button>
+          <button class="chip-btn" data-merch-filter="AYESHA">AYESHA GEAR</button>
+          <button class="chip-btn" data-merch-filter="ATHENA">ATHENA GEAR</button>
+        </div>
+        <div style="font-size:10px;color:var(--gold);">CLICK "TRY ON IN 3D" TO INSPECT ON CHARACTERS</div>
+      </div>
+
+      <div class="merch-content-split">
+        <div id="merch-grid" class="merch-grid"></div>
+
+        <div class="cart-sidebar">
+          <div>
+            <div class="char-tag">HOMER'S REGISTER // BAG</div>
+            <strong style="font-size:15px;">YOUR ORDER</strong>
+            <div id="cart-items-list" class="cart-items-list"></div>
+          </div>
+          <div>
+            <div id="cart-summary-text" style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:8px;">
+              1 ITEM(S) // $48.00 USD
+            </div>
+            <button id="checkout-btn" class="full-cta-btn">PRINT RECEIPT &amp; CHECKOUT →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       THERMAL RECEIPT CHECKOUT MODAL
+       ====================================================================== -->
+  <div id="receipt-modal" class="modal-backdrop hidden" style="z-index:40;">
+    <div class="receipt-box">
+      <div id="receipt-body"></div>
+      <button id="close-receipt-btn" class="full-cta-btn" style="margin-top:14px;background:#151515;border-color:#151515;">
+        DONE // BACK TO STORE
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       EPISODE ARCHIVE / VIDEO PLAYER MODAL
+       ====================================================================== -->
+  <div id="episode-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width:780px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-sub">PUBLIC DOOM P(●) // FEATURE ESSAY</div>
+          <h2>THE DEATH OF INTERESTING THINGS (1080P60)</h2>
+        </div>
+        <button id="close-episode-btn" class="hud-btn">✕ CLOSE MONITOR</button>
+      </div>
+      <div style="padding:18px;background:#07080d;display:flex;flex-direction:column;gap:12px;">
+        <video id="episode-video" src="./assets/video/episode_preview.mp4" controls loop style="width:100%;border:1px solid var(--border-hi);background:#000;"></video>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <strong style="color:var(--gold);font-size:12px;">FEATURING JAX, TOPENG, AYESHA &amp; ATHENA</strong>
+            <p style="font-size:10px;color:var(--muted);margin-top:3px;">
+              Original procedural 3D PS1 film &amp; 48kHz DSP soundtrack from <code>/Users/reedsigih/deathint</code>.
+            </p>
+          </div>
+          <a href="https://www.youtube.com" target="_blank" rel="noopener" class="hud-btn merch-cta">
+            SUBSCRIBE TO PUBLIC DOOM ON YOUTUBE ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
