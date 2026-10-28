@@ -12,6 +12,36 @@
       }
     }
   </script>
+  <script>
+    // Bulletproof boot dismisser: immediately dismisses overlay on click
+    window.enterPublicDoom = function(playChime) {
+      try {
+        var boot = document.getElementById('boot-screen');
+        if (boot) {
+          boot.classList.add('hidden');
+          boot.style.display = 'none';
+          boot.style.pointerEvents = 'none';
+        }
+        if (window.PUBLIC_DOOM && window.PUBLIC_DOOM.sound) {
+          if (playChime) {
+            window.PUBLIC_DOOM.sound.playBootChime();
+            setTimeout(function() {
+              if (window.PUBLIC_DOOM && window.PUBLIC_DOOM.activeMeta) {
+                window.PUBLIC_DOOM.sound.playTrackById(window.PUBLIC_DOOM.activeMeta.bgm, true);
+              }
+            }, 650);
+          }
+          if (window.PUBLIC_DOOM.triggerSmear) {
+            window.PUBLIC_DOOM.triggerSmear(0.08, 0.02);
+          }
+        } else {
+          window.__PENDING_BOOT_CHIME = playChime;
+        }
+      } catch (err) {
+        console.warn('Boot dismiss error:', err);
+      }
+    };
+  </script>
 </head>
 <body>
 
@@ -59,8 +89,8 @@
           <span>SYNTH &amp; LORE</span>
         </div>
       </div>
-      <button id="boot-start-btn" class="boot-start-btn">▶ BOOT SYSTEM &amp; PLAY SOUNDTRACK [ENTER 3D WORLD]</button>
-      <button id="boot-skip-btn" class="mini-action-btn" style="width:100%;padding:6px;">ENTER SILENTLY (MUTE BOOT CHIME)</button>
+      <button id="boot-start-btn" class="boot-start-btn" onclick="window.enterPublicDoom(true);" type="button">▶ BOOT SYSTEM &amp; PLAY SOUNDTRACK [ENTER 3D WORLD]</button>
+      <button id="boot-skip-btn" class="mini-action-btn" style="width:100%;padding:6px;" onclick="window.enterPublicDoom(false);" type="button">ENTER SILENTLY (MUTE BOOT CHIME)</button>
     </div>
   </div>
 

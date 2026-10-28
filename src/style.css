@@ -1081,8 +1081,9 @@ html, body {
   transition: opacity 0.35s ease;
 }
 .boot-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
 }
 .boot-card {
   max-width: 580px;

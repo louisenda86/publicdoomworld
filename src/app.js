@@ -139,14 +139,14 @@ class PublicDoomApp {
     const skipBootBtn = document.getElementById('boot-skip-btn');
 
     const finishBoot = playChime => {
-      if (bootScreen) bootScreen.classList.add('hidden');
-      if (playChime) {
-        this.sound.playBootChime();
-        setTimeout(() => {
-          this.sound.playTrackById(this.activeMeta.bgm, true);
-        }, 650);
+      if (typeof window.enterPublicDoom === 'function') {
+        window.enterPublicDoom(playChime);
+      } else {
+        if (bootScreen) {
+          bootScreen.classList.add('hidden');
+          bootScreen.style.display = 'none';
+        }
       }
-      this.triggerSmear(0.08, 0.02);
     };
 
     if (bootBtn) bootBtn.addEventListener('click', () => finishBoot(true));
@@ -1325,6 +1325,27 @@ class PublicDoomApp {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  window.PUBLIC_DOOM = new PublicDoomApp();
-});
+function initPublicDoom() {
+  if (window.PUBLIC_DOOM) return;
+  try {
+    window.PUBLIC_DOOM = new PublicDoomApp();
+    if (window.__PENDING_BOOT_CHIME !== undefined) {
+      if (window.__PENDING_BOOT_CHIME) {
+        window.PUBLIC_DOOM.sound?.playBootChime?.();
+        setTimeout(() => {
+          window.PUBLIC_DOOM.sound?.playTrackById?.(window.PUBLIC_DOOM.activeMeta?.bgm, true);
+        }, 650);
+      }
+      window.PUBLIC_DOOM.triggerSmear?.(0.08, 0.02);
+      delete window.__PENDING_BOOT_CHIME;
+    }
+  } catch (err) {
+    console.error('[PUBLIC DOOM] Engine initialization error:', err);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPublicDoom);
+} else {
+  initPublicDoom();
+}
