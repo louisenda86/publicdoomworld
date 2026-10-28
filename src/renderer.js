@@ -221,3 +221,19 @@ export class Renderer {
     return this.yuvBuf;
   }
 }
+
+export const Look = { ...DEFAULT_LOOK };
+
+export function createPS1Renderer(canvas, w, h) {
+  const inst = new Renderer(canvas);
+  if (w && h) inst.resize(w, h);
+  let fCount = 0;
+  return {
+    resize(nw, nh) { inst.resize(nw, nh); },
+    render(scene, camera, t = 0) {
+      fCount++;
+      inst.frame({ scene, camera, look: Look, t, frame: fCount, target: 'screen' });
+    },
+  };
+}
+

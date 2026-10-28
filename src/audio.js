@@ -210,4 +210,30 @@ export class SoundSystem {
       osc.stop(t + 0.25);
     });
   }
+
+  // Compatibility aliases used by app.js & jam_studio.js
+  ensureContext() { this.ensureCtx(); }
+  playBootChime() { this.playBoot(); }
+  sfxVoiceBlip(charId) { this.sfxVoice(charId); }
+  sfxAddCart() { this.sfxCash(); }
+  sfxOpenModal() { this.sfxClick(1120); }
+
+  updateVisualizer() {
+    const bars = this.getBars(8);
+    const els = document.querySelectorAll('.eq-bar');
+    els.forEach((el, i) => {
+      el.style.height = `${Math.round((bars[i] || 0.15) * 14)}px`;
+    });
+    const tr = TRACK_LIST[this.currentTrackIdx];
+    const titleEl = document.getElementById('bgm-track-title');
+    if (titleEl && tr) titleEl.textContent = tr.title;
+    const playBtn = document.getElementById('bgm-play-btn');
+    if (playBtn) playBtn.textContent = this.playing ? '⏸ PAUSE' : '▶ PLAY';
+    const muteBtn = document.getElementById('bgm-mute-btn');
+    if (muteBtn) muteBtn.textContent = this.muted ? 'MUTE: ON' : 'MUTE: OFF';
+  }
 }
+
+export const SoundController = SoundSystem;
+export const TRACKS = TRACK_LIST;
+

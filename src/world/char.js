@@ -585,6 +585,42 @@ export class Character {
       const crown = new THREE.Mesh(new THREE.SphereGeometry(0.5, 10, 6, 0, Math.PI * 2, 0, 1.2), lam({ map: ptex('knitcrown2', 64, 32, (g, w, h, R) => { for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { g.fillStyle = shade('#d8261c', (x % 3 === 0 ? 0.86 : 1.02) * (0.95 + R() * 0.08)); g.fillRect(x, y, 1, 1); } }), flat: false }));
       crown.scale.set(S.headW * 1.03, S.headH * 1.0, S.headD * 1.03); crown.position.set(0, S.headH * 0.52, -0.004); this.J.head.add(crown);
     }
+    if (D.headphones) { // Studio over-ear headphones
+      const hpCol = typeof D.headphones === 'string' ? D.headphones : '#ff3b30';
+      const bandM = lam({ color: new THREE.Color('#18181f'), flat: true });
+      const cupM = lam({ color: new THREE.Color(hpCol), emissive: new THREE.Color(hpCol), ei: 0.25, flat: true });
+      const arc = new THREE.Mesh(new THREE.TorusGeometry(S.headW * 0.56, 0.014, 6, 14, Math.PI), bandM);
+      arc.position.set(0, S.headH * 0.54, 0);
+      this.J.head.add(arc);
+      for (const sx of [-1, 1]) {
+        const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.032, 10), cupM);
+        cup.rotation.z = Math.PI / 2;
+        cup.position.set(sx * (S.headW * 0.55), S.headH * 0.48, 0.0);
+        this.J.head.add(cup);
+      }
+    }
+    if (D.shades) { // Cyber visor sunglasses
+      const shCol = typeof D.shades === 'string' ? D.shades : '#00f0ff';
+      const frameM = lam({ color: new THREE.Color('#111116'), flat: true });
+      const lensM = lam({ color: new THREE.Color(shCol), emissive: new THREE.Color(shCol), ei: 0.45, flat: true });
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(S.headW * 0.96, 0.016, 0.02), frameM);
+      bar.position.set(0, S.headH * 0.54, S.headD * 0.49);
+      this.J.head.add(bar);
+      for (const sx of [-1, 1]) {
+        const lens = new THREE.Mesh(new THREE.BoxGeometry(S.headW * 0.38, 0.044, 0.015), lensM);
+        lens.position.set(sx * S.headW * 0.23, S.headH * 0.50, S.headD * 0.50);
+        this.J.head.add(lens);
+      }
+    }
+    if (D.visor) { // diner visor: open band + curved brim, laurel logo on the front
+      const V = D.visor, hw = S.headW / 2, hh = S.headH / 2, hd = S.headD / 2, cy = S.headH * 0.5;
+      const btex = ptex('visorband:' + V.col + V.logo, 128, 16, (g, w, h, R) => { noiseFill(g, w, h, V.col, 0.05, R); g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(0, h - 2, w, 2); g.fillStyle = V.logo; g.fillRect(58, 4, 2, 8); g.fillRect(63, 4, 2, 8); g.fillRect(68, 4, 2, 8); g.fillRect(56, 3, 16, 2); g.fillRect(56, 11, 16, 2); for (let k = 0; k < 4; k++) { g.fillRect(51 - k * 2, 5 + k * 2, 2, 1); g.fillRect(75 + k * 2, 5 + k * 2, 2, 1); } });
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.05, 16, 1, true, Math.PI, Math.PI * 2), lam({ map: btex, side: THREE.DoubleSide })); band.material.userData.self = 0.12;
+      band.scale.set(hw * 1.1, 0.8, hd * 1.13); band.position.set(0, cy + hh * 0.84, -0.02); band.rotation.x = 0.3; band.castShadow = true; this.J.head.add(band);
+      const sh = new THREE.Shape(); sh.moveTo(-hw * 1.08, 0); sh.quadraticCurveTo(-hw * 0.95, 0.105, 0, 0.115); sh.quadraticCurveTo(hw * 0.95, 0.105, hw * 1.08, 0); sh.quadraticCurveTo(0, 0.035, -hw * 1.08, 0);
+      const brim = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.008, bevelEnabled: false, curveSegments: 6 }), lam({ color: new THREE.Color(V.col).multiplyScalar(0.8), flat: true })); brim.material.userData.self = 0.04;
+      brim.rotation.x = Math.PI / 2 + 0.12; brim.position.set(0, cy + hh * 0.84 - 0.0, hd * 0.92); brim.scale.set(0.95, 0.85, 1); brim.castShadow = true; this.J.head.add(brim);
+    }
   }
   buildHair() {
     const D = this.D, S = this.dims, H = D.hair; if (!H || H.style === 'none') return;
@@ -645,22 +681,45 @@ export class Character {
       for (const s of [-1, 1]) { const b = P(s * 1.45, 0.1, 1.0); fixed.push({ base: b, tip: tip(b, s * 0.01, -0.12, 0.02), w: 0.05, side: [0, 0, 1] }); }
       for (const s of [-1, 1]) {
         const piv = new THREE.Group(); piv.position.set(s * hw * 1.0, cy + hh * 0.55, -hd * 0.5); head.add(piv);
-        const tie = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.035, 6), lam({ color: H.tie })); tie.rotation.z = Math.PI / 2; piv.add(tie);
+        const tie = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.035, 6), lam({ color: H.tie || '#ff63b0' })); tie.rotation.z = Math.PI / 2; piv.add(tie);
         const sp = []; for (let i = 0; i < 7; i++) { const a = i * 0.9; sp.push({ base: [s * 0.035 + Math.cos(a) * 0.015, Math.sin(a) * 0.015, 0], tip: [s * (0.08 + rnd(i, 7) * 0.07), -0.3 - rnd(i, 8) * 0.1, -0.04 + Math.cos(a) * 0.05], w: 0.075, d: 0.05, side: [0, 0, 1] }); }
         add(sp, piv); dyn.push({ piv, k: 1.3, len: 0.3, side: s });
       }
+    } else if (H.style === 'buns') {
+      // Twin Space Buns + face-framing side strands
+      for (let i = 0; i < 6; i++) { const yaw = -0.75 + i * 0.3; const b = P(yaw, 0.64, 1.02); fixed.push({ base: b, tip: tip(b, Math.sin(yaw) * 0.02, -0.055, 0.035), w: 0.055, side: [1, 0, 0] }); }
+      for (const s of [-1, 1]) {
+        const bunG = new THREE.Group();
+        bunG.position.set(s * hw * 0.95, cy + hh * 0.86, -hd * 0.35);
+        head.add(bunG);
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.042, 0.012, 6, 10), lam({ color: H.tie || '#8b5cf6' }));
+        ring.rotation.y = s * 0.6;
+        bunG.add(ring);
+        const bunMesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.068, 0), mat);
+        bunMesh.position.set(s * 0.02, 0.02, -0.01);
+        bunG.add(bunMesh);
+        // Side cheek strand
+        const piv = new THREE.Group(); piv.position.set(s * hw * 0.92, cy + 0.02, 0.03); head.add(piv);
+        add([{ base: [0, 0.01, 0], tip: [s * 0.02, -0.22, 0.02], w: 0.048, side: [0, 0, 1] }], piv);
+        dyn.push({ piv, k: 0.7, len: 0.22, side: s });
+      }
+    } else if (H.style === 'bob') {
+      // Sleek Cyber Bob Cut (blunt bangs + chin-length angled side panels)
+      for (let i = 0; i < 8; i++) { const yaw = -0.82 + i * 0.23; const b = P(yaw, 0.62, 1.04); fixed.push({ base: b, tip: tip(b, 0, -0.062, 0.03), w: 0.058, d: 0.022, side: [1, 0, 0] }); }
+      for (const s of [-1, 1]) {
+        const piv = new THREE.Group(); piv.position.set(s * hw * 0.98, cy + 0.05, 0.0); head.add(piv);
+        const sp = [];
+        for (let i = 0; i < 4; i++) {
+          const zOff = 0.04 - i * 0.035;
+          sp.push({ base: [0, 0.02, zOff], tip: [s * 0.015, -0.21 + i * 0.015, zOff + 0.015], w: 0.068, side: [0, 0, 1] });
+        }
+        add(sp, piv);
+        dyn.push({ piv, k: 0.45, len: 0.2, side: s });
+      }
+      for (let i = 0; i < 6; i++) { const b = P(Math.PI + (i - 2.5) * 0.36, 0.12, 1.02); fixed.push({ base: b, tip: tip(b, 0, -0.14, -0.02), w: 0.075, side: [1, 0, 0] }); }
     }
     if (fixed.length) add(fixed);
     this.hairDyn = dyn;
-    if (D.visor) { // diner visor: open band + curved brim, laurel logo on the front
-      const V = D.visor;
-      const btex = ptex('visorband:' + V.col + V.logo, 128, 16, (g, w, h, R) => { noiseFill(g, w, h, V.col, 0.05, R); g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(0, h - 2, w, 2); g.fillStyle = V.logo; g.fillRect(58, 4, 2, 8); g.fillRect(63, 4, 2, 8); g.fillRect(68, 4, 2, 8); g.fillRect(56, 3, 16, 2); g.fillRect(56, 11, 16, 2); for (let k = 0; k < 4; k++) { g.fillRect(51 - k * 2, 5 + k * 2, 2, 1); g.fillRect(75 + k * 2, 5 + k * 2, 2, 1); } });
-      const band = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.05, 16, 1, true, Math.PI, Math.PI * 2), lam({ map: btex, side: THREE.DoubleSide })); band.material.userData.self = 0.12;
-      band.scale.set(hw * 1.1, 0.8, hd * 1.13); band.position.set(0, cy + hh * 0.84, -0.02); band.rotation.x = 0.3; band.castShadow = true; head.add(band);
-      const sh = new THREE.Shape(); sh.moveTo(-hw * 1.08, 0); sh.quadraticCurveTo(-hw * 0.95, 0.105, 0, 0.115); sh.quadraticCurveTo(hw * 0.95, 0.105, hw * 1.08, 0); sh.quadraticCurveTo(0, 0.035, -hw * 1.08, 0);
-      const brim = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.008, bevelEnabled: false, curveSegments: 6 }), lam({ color: new THREE.Color(V.col).multiplyScalar(0.8), flat: true })); brim.material.userData.self = 0.04;
-      brim.rotation.x = Math.PI / 2 + 0.12; brim.position.set(0, cy + hh * 0.84 - 0.0, hd * 0.92); brim.scale.set(0.95, 0.85, 1); brim.castShadow = true; head.add(brim);
-    }
   }
   // ---------- pose application ----------
   // pose: { root:[x,y,z,ry], hipsY, joints: {name:[rx,ry,rz]}, eyes, mouth }

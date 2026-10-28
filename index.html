@@ -19,6 +19,12 @@
   <canvas id="stage-canvas"></canvas>
   <div class="crt-frame-overlay"></div>
 
+  <!-- CAPSULE CORP. BORING TUNNEL TRANSIT BANNER -->
+  <div id="capsule-transit-banner" class="capsule-transit-banner hidden">
+    <div class="cc-badge">CAPSULE CORP. // BORING TUNNEL HYPERLOOP</div>
+    <div id="capsule-transit-text" class="cc-dest">TRANSPORTING TO SECTOR...</div>
+  </div>
+
   <!-- 3D-to-2D Projected Interactive Character & Prop Pins -->
   <div id="pins-layer"></div>
 
@@ -29,26 +35,27 @@
     <div class="boot-card">
       <div class="boot-diamond">SONY-ERA 32-BIT // BAYER 4×4 DITHER ENGINE</div>
       <div class="boot-title">PUBLIC DOOM</div>
-      <div class="boot-sub">P(●) OFFICIAL YOUTUBE CHANNEL // INTERACTIVE 3D WORLD &amp; SUPPLY</div>
-      <p style="font-size:11px;line-height:1.5;color:#b8c0d8;margin-bottom:16px;">
-        Explore the low-poly PS1 worlds where <strong>JAX</strong>, <strong>TOPENG</strong>, <strong>AYESHA</strong>, and <strong>ATHENA</strong> live and record:
-        their <em>Broadcast Studio</em>, after-hours <em>Playground</em>, <em>Homer's 24H Diner</em>, and the sunlit <em>Voxel Grass Field</em>.
+      <div class="boot-sub">P(●) OFFICIAL YOUTUBE CHANNEL // 9 ROOMS LINKED VIA BORING TUNNEL</div>
+      <p style="font-size:11px;line-height:1.5;color:#b8c0d8;margin-bottom:14px;">
+        Explore the low-poly PS1 worlds where <strong>JAX (17)</strong>, <strong>TOPENG (18.5)</strong>, <strong>AYESHA (18)</strong>, and <strong>ATHENA (17.5)</strong> live—from
+        <em>Mars, City of Austin</em> &amp; <em>Reed High School</em> to their <em>Studio</em>, <em>Playground</em>, <em>Homer's Diner</em>, <em>Grass Field</em>,
+        <em>Mejals Gym</em>, <em>Chess Room</em>, <em>Bathroom &amp; Jacuzzi</em>, and <em>Jamming Room</em> connected by <strong>CAPSULE CORP.</strong>
       </p>
       <div class="boot-cast-strip">
         <div class="boot-cast-cell" style="border-top:2px solid #ff3b30">
-          <strong>JAX</strong>
+          <strong>JAX · 17</strong>
           <span>MAIN HOST</span>
         </div>
         <div class="boot-cast-cell" style="border-top:2px solid #ff7eb6">
-          <strong>TOPENG</strong>
+          <strong>TOPENG · 18.5</strong>
           <span>RESEARCH LABS</span>
         </div>
         <div class="boot-cast-cell" style="border-top:2px solid #9b6bff">
-          <strong>AYESHA</strong>
+          <strong>AYESHA · 18</strong>
           <span>CREATIVE DIR</span>
         </div>
         <div class="boot-cast-cell" style="border-top:2px solid #ffd43b">
-          <strong>ATHENA</strong>
+          <strong>ATHENA · 17.5</strong>
           <span>SYNTH &amp; LORE</span>
         </div>
       </div>
@@ -58,20 +65,22 @@
   </div>
 
   <!-- ======================================================================
-       TOP HUD: BRAND, 4-CHARACTER SELECTOR, MERCH STORE & SHADER LAB
+       TOP HUD: BRAND, 4-CHARACTER SELECTOR, PROFILES, EPISODES, MINIGAMES & MERCH
        ====================================================================== -->
   <header class="hud-top">
     <div class="brand-box">
-      <div class="brand-emblem">P(<span class="red-dot"></span>)</div>
+      <a href="https://www.youtube.com/@publicdoom" target="_blank" rel="noopener" class="brand-emblem" title="Visit @publicdoom on YouTube" style="text-decoration:none;color:inherit;">
+        P(<span class="red-dot"></span>)
+      </a>
       <div class="brand-meta">
         <div class="ch-title">PUBLIC DOOM</div>
-        <div class="ch-sub">YOUTUBE CHANNEL // 4-WORLD ATLAS</div>
+        <div class="ch-sub">MARS, CITY OF AUSTIN // CAPSULE CORP.</div>
       </div>
     </div>
 
     <!-- Quick Focus Bar for the 4 Characters -->
     <div class="cast-quick-bar">
-      <span class="cast-bar-label">CAST //</span>
+      <span class="cast-bar-label">CAST (WALK/ATTIRE) //</span>
       <button class="cast-pill" data-char-btn="JAX" style="--c-col:#ff3b30">
         <span class="c-dot"></span>01 JAX
       </button>
@@ -87,11 +96,15 @@
     </div>
 
     <div class="hud-actions">
-      <button id="open-episode-btn" class="hud-btn">▶ WATCH EPISODE</button>
-      <button id="toggle-fx-btn" class="hud-btn">⚙ PS1 / DITHER FX</button>
+      <button id="open-profiles-btn" class="hud-btn">📋 CAST PROFILES</button>
+      <button id="open-episode-btn" class="hud-btn">▶ WATCH EPISODES (1–3)</button>
+      <button id="open-chess-btn" class="hud-btn">♟ PLAY CHESS</button>
+      <button id="open-jam-btn" class="hud-btn">🎹 JAM DECK</button>
+      <button id="open-capsule-btn" class="hud-btn">🚇 CAPSULE CORP</button>
+      <button id="toggle-fx-btn" class="hud-btn">⚙ PS1 FX</button>
       <button id="reset-cam-btn" class="hud-btn">⌖ RESET CAM</button>
       <button id="open-merch-btn" class="hud-btn merch-cta">
-        ★ MERCH STORE <span id="cart-count-badge" class="badge-pill">1</span>
+        ★ MERCH <span id="cart-count-badge" class="badge-pill">1</span>
       </button>
     </div>
   </header>
@@ -110,7 +123,7 @@
       <div id="world-views-bar" class="world-views-bar"></div>
     </div>
 
-    <!-- Soundtrack Player using Music from DEATH_OF_INTERESTING_THINGS_1080p60.mp4 -->
+    <!-- Soundtrack Player -->
     <div class="audio-deck">
       <div class="deck-top">
         <span class="deck-label">OST // DEATH OF INTERESTING THINGS</span>
@@ -129,7 +142,8 @@
   </aside>
 
   <!-- ======================================================================
-       RIGHT HUD: CHARACTER DOSSIER & LIVE 3D RIG INSPECTOR
+       RIGHT HUD: CHARACTER DOSSIER, ATTIRES MENU (5 ATTIRES + 5 ACCESSORIES +
+       5 FEMALE HAIRSTYLES + 10 PASSCODE 5539 COLLECTION) & GAME WALKING
        ====================================================================== -->
   <aside id="char-panel" class="char-panel hidden">
     <div class="panel-head">
@@ -139,6 +153,11 @@
         <div id="char-panel-role" class="char-role">HOST // WRITER</div>
       </div>
       <button id="char-close-btn" class="icon-close" title="Close">✕</button>
+    </div>
+
+    <!-- Game-like Character Walk Banner -->
+    <div class="walk-mode-banner">
+      <strong>🎮 GAME WALK ACTIVE:</strong> Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>▲</kbd><kbd>▼</kbd><kbd>◄</kbd><kbd>►</kbd> or <strong>Click Floor</strong> to walk this character!
     </div>
 
     <div class="char-quote-box">
@@ -152,12 +171,46 @@
 
     <div id="char-stats-grid" class="char-stats-grid"></div>
 
+    <!-- 5 Types of Attires Menu (Both Male & Female) -->
     <div class="inspector-section">
-      <div class="sec-label"><span>ACTIVE OUTFIT</span><span>3D MESH SWAP</span></div>
-      <div class="outfit-bar">
-        <span id="char-outfit-label" class="outfit-name">HOMER'S CREW UNIFORM</span>
-        <button id="char-outfit-btn" class="mini-action-btn">↻ SWAP OUTFIT</button>
+      <div class="sec-label">
+        <span>5 ATTIRES MENU</span>
+        <span id="char-outfit-label" style="color:var(--gold);">01 · SIGNATURE</span>
       </div>
+      <div id="char-attires-list" class="chip-grid-2"></div>
+    </div>
+
+    <!-- 5 Types of Accessories Menu (Both Male & Female) -->
+    <div class="inspector-section">
+      <div class="sec-label"><span>5 ACCESSORIES MENU</span><span>MALE &amp; FEMALE</span></div>
+      <div id="char-accessories-list" class="chip-grid-2"></div>
+    </div>
+
+    <!-- 5 Types of Hairstyles (Female Only: Ayesha & Athena) -->
+    <div id="char-hairstyles-section" class="inspector-section hidden">
+      <div class="sec-label"><span>5 FEMALE HAIRSTYLES</span><span>3D SPRING HAIR</span></div>
+      <div id="char-hairstyles-list" class="chip-row"></div>
+    </div>
+
+    <!-- 10 Lingerie Collection (Female Only — Password Button: 5539) -->
+    <div id="char-lingerie-section" class="inspector-section hidden">
+      <div class="sec-label">
+        <span>10 LINGERIE COLLECTION</span>
+        <span id="lingerie-lock-status" style="color:var(--red);">🔒 LOCKED</span>
+      </div>
+
+      <div id="lingerie-lock-box" class="lingerie-lock-box">
+        <button id="lingerie-unlock-toggle-btn" class="mini-action-btn" style="width:100%;padding:7px;border-color:var(--pink);color:var(--pink);">
+          🔒 ENTER PASSWORD TO ACCESS 10 LINGERIE COLLECTION
+        </button>
+        <div id="lingerie-pass-form" class="lingerie-pass-form hidden">
+          <input id="lingerie-pass-input" type="password" maxlength="8" placeholder="PASSCODE (5539)" class="pass-input" />
+          <button id="lingerie-pass-submit" class="mini-action-btn" style="background:var(--pink);color:#000;font-weight:800;">UNLOCK</button>
+        </div>
+        <div id="lingerie-pass-msg" class="pass-msg"></div>
+      </div>
+
+      <div id="char-lingerie-list" class="chip-grid-2 hidden"></div>
     </div>
 
     <div class="inspector-section">
@@ -246,38 +299,199 @@
   </div>
 
   <!-- ======================================================================
-       BOTTOM HUD: 4 WORLDS + ATLAS MAP SPATIAL NAVIGATION DOCK
+       BOTTOM HUD: ALL 9 ROOMS CONNECTED ALONG BORING TUNNEL + 3D ATLAS MAP
        ====================================================================== -->
   <footer class="hud-bottom">
-    <div class="hint-pill">DRAG TO ORBIT · SCROLL TO ZOOM · CLICK PINS OR CAST</div>
+    <div class="hint-pill">WASD / ARROWS / CLICK FLOOR TO WALK · DRAG TO ORBIT</div>
 
     <nav class="world-dock" aria-label="Worlds Navigation">
-      <button id="prev-world-btn" class="nav-arrow" title="Previous World">◀</button>
+      <button id="prev-world-btn" class="nav-arrow" title="Previous Room">◀</button>
       <button class="world-tab active" data-world-btn="studio">
-        <span class="wt-num">WORLD 01 // HQ</span>
-        <span class="wt-name">THE STUDIO</span>
+        <span class="wt-num">01 // HQ</span>
+        <span class="wt-name">STUDIO</span>
       </button>
       <button class="world-tab" data-world-btn="playground">
-        <span class="wt-num">WORLD 02 // PARK</span>
+        <span class="wt-num">02 // PARK</span>
         <span class="wt-name">PLAYGROUND</span>
       </button>
       <button class="world-tab" data-world-btn="diner">
-        <span class="wt-num">WORLD 03 // FAV SPOT</span>
-        <span class="wt-name">HOMER'S DINER</span>
+        <span class="wt-num">03 // DINER</span>
+        <span class="wt-name">HOMER'S</span>
       </button>
       <button class="world-tab" data-world-btn="meadow">
-        <span class="wt-num">WORLD 04 // OUTDOORS</span>
+        <span class="wt-num">04 // FIELD</span>
         <span class="wt-name">GRASS FIELD</span>
       </button>
-      <button class="world-tab" data-world-btn="island">
-        <span class="wt-num">WORLD 00 // HUB</span>
-        <span class="wt-name">3D ATLAS MAP</span>
+      <button class="world-tab" data-world-btn="gym">
+        <span class="wt-num">05 // IRON</span>
+        <span class="wt-name">MEJALS GYM</span>
       </button>
-      <button id="next-world-btn" class="nav-arrow" title="Next World">▶</button>
+      <button class="world-tab" data-world-btn="chess">
+        <span class="wt-num">06 // CLUB</span>
+        <span class="wt-name">CHESS ROOM</span>
+      </button>
+      <button class="world-tab" data-world-btn="spa">
+        <span class="wt-num">07 // 104°F</span>
+        <span class="wt-name">JACUZZI SPA</span>
+      </button>
+      <button class="world-tab" data-world-btn="jam">
+        <span class="wt-num">08 // MUSIC</span>
+        <span class="wt-name">JAMMING ROOM</span>
+      </button>
+      <button class="world-tab" data-world-btn="tunnel">
+        <span class="wt-num">09 // POD</span>
+        <span class="wt-name">BORING TUNNEL</span>
+      </button>
+      <button class="world-tab" data-world-btn="island">
+        <span class="wt-num">00 // HUB</span>
+        <span class="wt-name">3D ATLAS</span>
+      </button>
+      <button id="next-world-btn" class="nav-arrow" title="Next Room">▶</button>
     </nav>
 
-    <div class="hint-pill">KEYS: [1–4] WORLDS · [0] MAP · [M] MERCH</div>
+    <div class="hint-pill">CAPSULE CORP. LINKS ALL ROOMS</div>
   </footer>
+
+  <!-- ======================================================================
+       CAST PROFILES & CREW LORE MODAL
+       ====================================================================== -->
+  <div id="profiles-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width:980px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-sub">MARS, CITY OF AUSTIN // REED HIGH SCHOOL // MIT DROPOUTS</div>
+          <h2>PUBLIC DOOM — OFFICIAL CAST PROFILES &amp; DOSSIER</h2>
+        </div>
+        <button id="close-profiles-btn" class="hud-btn">✕ RETURN TO 3D WORLD</button>
+      </div>
+
+      <div style="padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;">
+        <div class="crew-origin-banner">
+          <div>
+            <div class="char-tag">SHARED CREW ORIGIN // FOUND FAMILY ARCHIVE</div>
+            <h3 style="font-size:16px;margin-bottom:6px;color:var(--gold);">
+              MARS, CITY OF AUSTIN · REED HIGH SCHOOL · MIT DROPOUTS · EX-OPENAI / EX-ANTHROPIC / EX-SPACEXSI
+            </h3>
+            <p style="font-size:11px;line-height:1.55;color:#cbd5e1;">
+              <strong>Jax (17)</strong>, <strong>Topeng (18.5)</strong>, <strong>Athena (17.5)</strong>, and <strong>Ayesha (18)</strong> grew up together in
+              <strong>Mars, City of Austin</strong>, attended <strong>Reed High School</strong>, dropped out of <strong>MIT</strong>, and worked at
+              <strong>OpenAI</strong>, <strong>Anthropic</strong>, and <strong>SpaceXSI</strong> before walking away to build the Public Doom underground network.
+              <strong>They have no family—only each other.</strong>
+            </p>
+          </div>
+        </div>
+
+        <div id="profiles-cards-grid" class="profiles-cards-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       PLAYABLE CHESS ROOM MODAL (VISITOR VS JAX / TOPENG / AYESHA / ATHENA)
+       ====================================================================== -->
+  <div id="chess-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width:860px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-sub">SECTOR 06 // PUBLIC DOOM CHESS ROOM (BEGINNER SKILL)</div>
+          <h2>♟ PLAY CHESS WITH THE CREW</h2>
+        </div>
+        <button id="close-chess-btn" class="hud-btn">✕ RETURN TO CHESS ROOM</button>
+      </div>
+
+      <div class="chess-modal-body">
+        <div class="chess-sidebar">
+          <div class="char-tag">CHOOSE YOUR OPPONENT (BEGINNER SKILL)</div>
+          <div class="chip-grid-2">
+            <button class="chip-btn active" data-chess-opp="JAX">01 · JAX (680)</button>
+            <button class="chip-btn" data-chess-opp="TOPENG">02 · TOPENG (720)</button>
+            <button class="chip-btn" data-chess-opp="AYESHA">03 · AYESHA (750)</button>
+            <button class="chip-btn" data-chess-opp="ATHENA">04 · ATHENA (690)</button>
+          </div>
+
+          <div class="chess-opp-card">
+            <div id="chess-opp-name" style="font-size:20px;font-weight:900;color:#ff3b30;">JAX</div>
+            <div id="chess-opp-elo" style="font-size:10px;color:var(--gold);margin-bottom:4px;">SKILL: 680 // BEGINNER</div>
+            <div id="chess-opp-style" style="font-size:9px;color:var(--muted);margin-bottom:10px;">IMPULSIVE CAFFEINE GAMBITS</div>
+            <div id="chess-opp-quote" class="char-quote-text" style="font-size:11px;">
+              "I learned chess at 3 AM during a Homer's fryer shift. Go easy on my pawns!"
+            </div>
+          </div>
+
+          <div class="inspector-section">
+            <div class="sec-label"><span>CAPTURED BY YOU</span></div>
+            <div id="chess-captured-w" style="font-size:18px;min-height:24px;">—</div>
+          </div>
+          <div class="inspector-section">
+            <div class="sec-label"><span>CAPTURED BY CREW</span></div>
+            <div id="chess-captured-b" style="font-size:18px;min-height:24px;">—</div>
+          </div>
+
+          <button id="chess-reset-btn" class="full-cta-btn">↻ NEW CHESS MATCH</button>
+        </div>
+
+        <div class="chess-board-wrap">
+          <div id="chess-status-bar" class="chess-status-bar">YOUR TURN — CLICK A WHITE PIECE TO MOVE</div>
+          <div id="chess-grid" class="chess-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       PLAYABLE JAMMING ROOM STUDIO MODAL (SYNTH, DRUM, GUITAR, BASS, PIANO)
+       ====================================================================== -->
+  <div id="jam-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width:860px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-sub">SECTOR 08 // PUBLIC DOOM JAMMING STUDIO</div>
+          <h2>🎹 LIVE JAMMING DECK — SYNTH · DRUM · GUITAR · BASS · PIANO</h2>
+        </div>
+        <button id="close-jam-btn" class="hud-btn">✕ RETURN TO JAMMING ROOM</button>
+      </div>
+
+      <div style="padding:18px;display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div class="chip-row">
+            <button class="chip-btn active" data-jam-inst="synth">🎹 SYNTHESIZER</button>
+            <button class="chip-btn" data-jam-inst="drums">🥁 DRUM KIT</button>
+            <button class="chip-btn" data-jam-inst="guitar">🎸 ELECTRIC GUITAR</button>
+            <button class="chip-btn" data-jam-inst="bass">🎸 SUB / SLAP BASS</button>
+            <button class="chip-btn" data-jam-inst="piano">🎼 STUDIO PIANO</button>
+          </div>
+          <button id="jam-loop-btn" class="hud-btn" style="border-color:var(--gold);color:var(--gold);">▶ AUTO BEAT LOOP</button>
+        </div>
+
+        <div id="jam-live-readout" class="chess-status-bar">
+          READY // CLICK KEYS OR PRESS KEYBOARD [A–K, W, E, T, Y, U] OR [1–8] FOR DRUMS
+        </div>
+
+        <div id="jam-keys-container" class="jam-keys-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       CAPSULE CORP. // BORING TUNNEL ROOM TRANSIT MODAL
+       ====================================================================== -->
+  <div id="capsule-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width:740px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-sub">CAPSULE CORP. TRANSIT AUTHORITY // MARS–AUSTIN BORING TUNNEL</div>
+          <h2>🚇 SELECT DESTINATION ROOM ALONG BORING TUNNEL</h2>
+        </div>
+        <button id="close-capsule-btn" class="hud-btn">✕ CLOSE HATCH</button>
+      </div>
+      <div style="padding:18px;">
+        <p style="font-size:11px;color:var(--muted);margin-bottom:14px;">
+          All Public Doom sectors are interconnected along the subterranean Boring Tunnel. Board a pressurized <strong>CAPSULE CORP.</strong> pod for instant transit:
+        </p>
+        <div id="capsule-destinations-grid" class="profiles-cards-grid"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- ======================================================================
        PUBLIC DOOM MERCHANDISE STORE MODAL
@@ -339,28 +553,59 @@
   </div>
 
   <!-- ======================================================================
-       EPISODE ARCHIVE / VIDEO PLAYER MODAL
+       EPISODE ARCHIVE / YOUTUBE PLAYER MODAL (EPISODES 1, 2, 3 + CHANNEL)
        ====================================================================== -->
   <div id="episode-modal" class="modal-backdrop hidden">
-    <div class="modal-window" style="max-width:780px;">
+    <div class="modal-window" style="max-width:860px;">
       <div class="modal-header">
         <div>
-          <div class="modal-sub">PUBLIC DOOM P(●) // FEATURE ESSAY</div>
-          <h2>THE DEATH OF INTERESTING THINGS (1080P60)</h2>
+          <div class="modal-sub">PUBLIC DOOM P(●) // OFFICIAL YOUTUBE BROADCAST ARCHIVE</div>
+          <h2 id="episode-modal-title">EPISODE 1 — PUBLIC DOOM</h2>
         </div>
         <button id="close-episode-btn" class="hud-btn">✕ CLOSE MONITOR</button>
       </div>
-      <div style="padding:18px;background:#07080d;display:flex;flex-direction:column;gap:12px;">
-        <video id="episode-video" src="./assets/video/episode_preview.mp4" controls loop style="width:100%;border:1px solid var(--border-hi);background:#000;"></video>
+
+      <div style="padding:16px;background:#07080d;display:flex;flex-direction:column;gap:12px;">
+        <!-- Episode Selector Tabs -->
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div class="chip-row">
+            <button class="chip-btn active" data-ep-tab="ep1">▶ EPISODE 1</button>
+            <button class="chip-btn" data-ep-tab="ep2">▶ EPISODE 2</button>
+            <button class="chip-btn" data-ep-tab="ep3">▶ EPISODE 3</button>
+            <button class="chip-btn" data-ep-tab="local">🎞 LOCAL ENGINE CUT</button>
+          </div>
+          <a id="ep-direct-yt-link" href="https://youtu.be/4LVgV36cOxs?si=g37vh75cO-CSEGSw" target="_blank" rel="noopener" class="mini-action-btn" style="text-decoration:none;color:var(--gold);border-color:var(--gold);">
+            OPEN DIRECT VIDEO ON YOUTUBE ↗
+          </a>
+        </div>
+
+        <!-- YouTube Embed Iframe Container -->
+        <div id="ep-iframe-wrap" class="ep-iframe-wrap">
+          <iframe
+            id="episode-iframe"
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/4LVgV36cOxs?si=I6acaTrBUCJpkWaB"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <!-- Fallback / Bonus Local Video Cut -->
+        <video id="episode-video" class="hidden" src="./assets/video/episode_preview.mp4" controls loop style="width:100%;border:1px solid var(--border-hi);background:#000;"></video>
+
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
-            <strong style="color:var(--gold);font-size:12px;">FEATURING JAX, TOPENG, AYESHA &amp; ATHENA</strong>
+            <strong style="color:var(--gold);font-size:12px;">FEATURING JAX (17), TOPENG (18.5), AYESHA (18) &amp; ATHENA (17.5)</strong>
             <p style="font-size:10px;color:var(--muted);margin-top:3px;">
-              Original procedural 3D PS1 film &amp; 48kHz DSP soundtrack from <code>/Users/reedsigih/deathint</code>.
+              Official broadcasts from <code>https://www.youtube.com/@publicdoom</code> · Mars, City of Austin.
             </p>
           </div>
-          <a href="https://www.youtube.com" target="_blank" rel="noopener" class="hud-btn merch-cta">
-            SUBSCRIBE TO PUBLIC DOOM ON YOUTUBE ↗
+          <a href="https://www.youtube.com/@publicdoom" target="_blank" rel="noopener" class="hud-btn merch-cta" style="text-decoration:none;">
+            SUBSCRIBE TO @PUBLICDOOM ON YOUTUBE ↗
           </a>
         </div>
       </div>
