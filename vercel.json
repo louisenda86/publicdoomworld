@@ -1,0 +1,7 @@
+{
+  "name": "publicdoom",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
+}
