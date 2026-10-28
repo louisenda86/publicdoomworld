@@ -1,0 +1,21 @@
+{
+  "name": "public-doom",
+  "version": "1.0.0",
+  "description": "PUBLIC DOOM - Interactive 3D Low-Poly PS1 World",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "threejs",
+    "ps1",
+    "low-poly",
+    "public-doom",
+    "retro-3d"
+  ],
+  "author": "Public Doom",
+  "license": "MIT"
+}
