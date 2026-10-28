@@ -283,3 +283,11 @@ export const MERCH_ITEMS = [
     },
   },
 ];
+
+export function renderMerchGraphic(canvas, item, t = 0) {
+  if (!canvas || !item || typeof item.drawPreview !== 'function') return;
+  const g = canvas.getContext('2d');
+  if (!g) return;
+  item.drawPreview(g, canvas.width, canvas.height, t);
+}
+

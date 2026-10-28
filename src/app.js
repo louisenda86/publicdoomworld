@@ -836,6 +836,7 @@ class PublicDoomApp {
       attireList.forEach(a => {
         const b = document.createElement('button');
         b.className = 'chip-btn' + (entry.attireId === a.id ? ' active' : '');
+        b.setAttribute('data-attire-id', a.id);
         b.textContent = a.label;
         b.addEventListener('click', () => {
           const lbl = entry.setAttire(a.id);
@@ -854,6 +855,7 @@ class PublicDoomApp {
       ACCESSORIES_LIST.forEach(acc => {
         const b = document.createElement('button');
         b.className = 'chip-btn' + (entry.accessoryId === acc.id ? ' active' : '');
+        b.setAttribute('data-acc-id', acc.id);
         b.textContent = acc.label;
         b.addEventListener('click', () => {
           entry.setAccessory(acc.id);
@@ -874,6 +876,7 @@ class PublicDoomApp {
         FEMALE_HAIRSTYLES.forEach(h => {
           const b = document.createElement('button');
           b.className = 'chip-btn' + (entry.hairstyleId === h.id ? ' active' : '');
+          b.setAttribute('data-hair-id', h.id);
           b.textContent = h.label;
           b.addEventListener('click', () => {
             entry.setHairstyle(h.id);
@@ -903,6 +906,7 @@ class PublicDoomApp {
           FEMALE_LINGERIE_COLLECTION.forEach(item => {
             const b = document.createElement('button');
             b.className = 'chip-btn' + (entry.attireId === item.id ? ' active' : '');
+            b.setAttribute('data-lingerie-id', item.id);
             b.textContent = item.label;
             b.addEventListener('click', () => {
               const lbl = entry.setAttire(item.id);
@@ -1310,10 +1314,10 @@ class PublicDoomApp {
     Look.dzLight = pal.light;
 
     if (this.transitionTimer > 0) {
-      this.transitionTimer = Math.max(0, this.transitionTimer - 0.016);
+      this.transitionTimer = Math.max(0, this.transitionTimer - dt);
       const k = this.transitionTimer / 0.16;
       Look.smear = [this.smearVec[0] * k, this.smearVec[1] * k];
-      Look. flash = k * 0.18;
+      Look.flash = k * 0.18;
     } else {
       Look.smear = [0, 0];
       Look.flash = 0;
